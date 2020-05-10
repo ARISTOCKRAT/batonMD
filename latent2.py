@@ -4,7 +4,7 @@ np.seterr(all="ignore")
 
 
 project_path = r"d:\_NUU\2020\batonMD"
-# proof
+# proof2
 
 
 def turgunlik(ustun, alomat1, alomat2, amal):
