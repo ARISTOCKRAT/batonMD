@@ -3,6 +3,10 @@ import numpy as np
 import functions
 import turgunlikv1
 
+# project_path = r"d:\NUU documents\Ilmiy ish\Intervallar"
+project_path = r"d:\_NUU\2020\batonMD"
+
+
 np.seterr(all='raise')
 
 
@@ -103,8 +107,8 @@ def turgunlik(column, labels, explain_text):
 #
 #
 ########################################################################################################################
-matritsa = np.genfromtxt(r"d:\NUU documents\Ilmiy ish\Intervallar\init_data\giper\Objects.csv", delimiter=',')
-labels = np.genfromtxt(r"d:\NUU documents\Ilmiy ish\Intervallar\init_data\giper\Target.csv", delimiter=",")
+matritsa = np.genfromtxt(project_path + r"\init_data\giper\Objects.csv", delimiter=',')
+labels = np.genfromtxt(project_path + r"\init_data\giper\Target.csv", delimiter=",")
 
 shape = matritsa.shape
 feature_sorting = []
