@@ -58,7 +58,7 @@ def turgunlik_ishchi(feature_col, labels, explain_text):
 
 
 project_path = r"d:\_NUU\2020\batonMD"
-matritsa = np.genfromtxt(project_path + r"\init_data\giper\Objects.csv", delimiter=',')
+matritsa = np.genfromtxt(project_path + r"\init_data\giper\ObjectsExt.csv", delimiter=',')
 labels = np.genfromtxt(project_path + r"\init_data\giper\Target.csv", delimiter=",")
 
 shape = matritsa.shape
