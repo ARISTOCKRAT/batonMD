@@ -18,12 +18,13 @@ class Application(tk.Frame):
         self.wids = dict()
         self.fv = master.register(self.float_validator)
         self.feature_count = len(self.feature_names)
-        self.create_init_widgets()
+        self.create_maintab_widgets()
+        self.create_settings_widgets()
         self.newdata = []
 
         # self.pack()
 
-    def create_init_widgets(self):
+    def create_maintab_widgets(self):
 
         # CREATE LABELs with feature names
         self.wids["labels"] = []
@@ -53,10 +54,28 @@ class Application(tk.Frame):
         # wid.config(text=s)
         self.wids['log'] = wid
 
+    def create_settings_widgets(self):
+        self.wids['settings'] = dict()
+        # CREATE APPLY BUTTON for starting action
+        wid = ttk.Button(self.settingstab, text='Apply', command=self.settings_apply)
+        wid.grid(row=1, column=3, sticky='we', pady=10)
+        self.wids['settings']['btn_apply'] = wid
+
+        # FUZZY LOGIC BASE path
+        wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ")
+        wid.grid(row=3, column=0, sticky=tk.E, padx=5)
+
+        wid = ttk.Entry(self.settingstab, width=35)
+        wid.insert(0, "out_data/fuzzy_logic.json")
+        wid.grid(row=3, column=1, sticky="we", columnspan=3)
+        self.wids['settings']['path'] = wid
+
     def calc(self):
         self.getnewdata()
-
         print("CALC button clicked!!!")
+
+    def settings_apply(self):
+        print("APPLY button clicked!!!")
 
     def getnewdata(self):
         self.newdata = [0 for x in range(self.feature_count)]
