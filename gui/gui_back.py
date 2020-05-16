@@ -10,7 +10,9 @@ class Application(tk.Frame):
 
         # self.l_f_names = []
         self.elements = dict()
+        self.fv = master.register(self.float_validator)
         self.create_init_widgets()
+
         # self.pack()
 
     def create_init_widgets(self):
@@ -18,27 +20,38 @@ class Application(tk.Frame):
         # CREATE LABELs with feature names
         self.elements["labels"] = []
         for n, f_name in enumerate(self.feature_names):
-            self.elements['labels'].append(
-                ttk.Label(self.master, text=f_name).grid(
-                    row=n+3, column=0, sticky=tk.E))
+            label = ttk.Label(self.master, text=f_name)
+            label.grid(row=n+3, column=0, sticky=tk.E)
+
+            self.elements['labels'].append(label)
 
         # CREATE ENTRYs for input feature values
         self.elements["entries"] = []
         for n in range(len(self.feature_names)):
-            self.elements['entries'].append(
-                ttk.Entry(self.master).grid(
-                    row=n+3, column=1, sticky=tk.E))
+            entry = ttk.Entry(self.master)
+            entry.grid(row=n+3, column=1, sticky=tk.E)
+            entry.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
+            self.elements['entries'].append(entry)
 
         # CREATE CALC BUTTON for starting action
-        self.elements["calc"] = ttk.Button(self.master, text='Hiloblash')
+        self.elements["calc"] = ttk.Button(self.master, text='Hiloblash', command=self.calc)
         self.elements["calc"].grid(
             row=len(self.feature_names)+4, column=3, sticky=tk.E)
-    #
-    #
-    #
-    #
-    #
-    #
+
+    def calc(self):
+        for entry in self.elements['entries']:
+            val = entry.get()
+            # validate
+
+        print("CALC button clicked!!!")
+
+    @staticmethod
+    def float_validator(isinsert, input, string):
+        print(input)
+        if isinsert:
+            if input in "0123456789." and string.count('.') <= 1:
+                return True
+        return False
 
     def init_settings(self):
         self.feature_names = ("Yoshi",
