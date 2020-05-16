@@ -6,14 +6,19 @@ class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        # self.book = ttk.note
+        self.book = ttk.Notebook(self.master)
+        self.book.pack()
         self.init_settings()
 
-        # self.l_f_names = []
-        self.elements = dict()
+        self.book.add(self.maintab, text='Asosiy')
+        self.book.add(self.settingstab, text='Sozlamalar')
+        self.book.add(self.logtab, text='LOGs')
+        self.book.add(self.abouttab, text='Muallif')
+
+        self.wids = dict()
         self.fv = master.register(self.float_validator)
-        self.create_init_widgets()
         self.feature_count = len(self.feature_names)
+        self.create_init_widgets()
         self.newdata = []
 
         # self.pack()
@@ -21,25 +26,32 @@ class Application(tk.Frame):
     def create_init_widgets(self):
 
         # CREATE LABELs with feature names
-        self.elements["labels"] = []
+        self.wids["labels"] = []
         for n, f_name in enumerate(self.feature_names):
-            label = ttk.Label(self.master, text=f_name)
-            label.grid(row=n+3, column=0, sticky=tk.E)
+            wid = ttk.Label(self.maintab, text=f_name)
+            wid.grid(row=n+3, column=0, sticky=tk.E)
 
-            self.elements['labels'].append(label)
+            self.wids['labels'].append(wid)
 
         # CREATE ENTRYs for input feature values
-        self.elements["entries"] = []
+        self.wids["entries"] = []
         for n in range(len(self.feature_names)):
-            entry = ttk.Entry(self.master)
-            entry.grid(row=n+3, column=1, sticky=tk.E)
-            entry.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
-            self.elements['entries'].append(entry)
+            wid = ttk.Entry(self.maintab)
+            wid.grid(row=n+3, column=1, sticky=tk.E)
+            wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
+            self.wids['entries'].append(wid)
 
         # CREATE CALC BUTTON for starting action
-        self.elements["calc"] = ttk.Button(self.master, text='Hiloblash', command=self.calc)
-        self.elements["calc"].grid(
-            row=len(self.feature_names)+4, column=3, sticky=tk.E)
+        self.wids["calc"] = ttk.Button(self.maintab, text='Hiloblash', command=self.calc)
+        self.wids["calc"].grid(
+            row=len(self.feature_names)+4, column=3, sticky=tk.W)
+
+        s="jasjdkljaskl jlksajdkljaskld\nasjdkjaskl\nasd"
+        # CREATE LOG tab
+        wid = tk.Text(self.logtab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)
+        wid.grid(row=3, column=0, sticky="wesn")
+        # wid.config(text=s)
+        self.wids['log'] = wid
 
     def calc(self):
         self.getnewdata()
@@ -50,7 +62,7 @@ class Application(tk.Frame):
         self.newdata = [0 for x in range(self.feature_count)]
         for i in range(self.feature_count):
             try:
-                val = self.elements['entries'][i].get()
+                val = self.wids['entries'][i].get()
                 val = 0 if val == "" else val
                 self.newdata[i] = float(val)
             except Exception as e:
@@ -61,7 +73,7 @@ class Application(tk.Frame):
     @staticmethod
     def float_validator(isinsert, input, string):
         if isinsert:
-            if input in "0123456789." and string.count('.') <= 1:
+            if input in "0123456789.+-" and string.count('.') <= 1:
                 return True
         return False
 
@@ -95,4 +107,10 @@ class Application(tk.Frame):
                               "Otilib chikish fraksiyasi(FV)",
                               "Solishtirma periferik karshilik(UPS)",
                               "Kerde indeksi")
-        self.maintab = ttk.Frame()
+        self.maintab = ttk.Frame(self.book, relief=tk.FLAT)
+        self.abouttab = ttk.Frame(self.book, relief=tk.RIDGE)
+        self.settingstab = ttk.Frame(self.book, relief=tk.SUNKEN)
+        self.logtab = ttk.Frame(self.book, relief=tk.RAISED)
+
+
+
