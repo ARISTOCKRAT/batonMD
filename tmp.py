@@ -1,48 +1,57 @@
 import tkinter as tk
 from tkinter import ttk
 
-root = tk.Tk()
-root.geometry("800x600")
-# feature_names = ("Yoshi",
-#                               "Bo'yi",
-#                               "Vazni",
-#                               "Sistolik arterial bosim(ADS)",
-#                               "Diastolik arterial bosim(ADD)",
-#                               "EKG ga nisbatan RR interval uzunligi",
-#                               "EKG ga nisbatan PQ interval uzunligi",
-#                               "EKG ga nisbatan QT interval uzunligi",
-#                               "EKG ga QRS interval uzunligi",
-#                               "Chap yurakoldi bushlig'ining ulchami(PLP)",
-#                               "CHap qorinchaning chegaraviy sistolik ulchami(KSR)",
-#                               "CHap qorinchaning chegaraviy diastolik ulchami(KDR)",
-#                               "Sistolada chap qorinchaning old-orqa ulchamining kiskarish darajasi(YSS)",
-#                               "O'rtacha arterial bosim (ADSR)",
-#                               "Pulsli arterial bosim (ADPuls)",
-#                               "K1 koeffitsenti",
-#                               "K2 koeffitsienti",
-#                               "Sistolik kursatkich(SisPok)",
-#                               "Sistola davom etishi (Sistola)",
-#                               "Diastola davom etishi (Diastola)",
-#                               "CHap qorinchaning sistolik xajmining chegarasi(KSO)",
-#                               "CHap korinchaning diastolik xajmining chegarasi(KDO)",
-#                               "Tomir urish chastotasi(DS)",
-#                               "Zarba hajmi(YO)",
-#                               "Minutdagi xajm(MO)",
-#                               "Yurak indeksi(SI)",
-#                               "Otilib chikish fraksiyasi(FV)",
-#                               "Solishtirma periferik karshilik(UPS)",
-#                               "Kerde indeksi")
-#
-# for n, fname in enumerate(feature_names):
-#     ttk.Label(root, text=fname, font=('Consolas', 15)).grid(row=n, column=0, sticky=tk.W)
-#
 
-with open(r"d:\_NUU\2020\batonMD\gui\hisobla.png", mode='br') as img:
-    f = img.read()
-    b = bytearray(f)
-    print(f)
-    print(b)
+class NoteBookApp:
+    def __init__(self, master):
+        self.master = master
+        self.notebk = ttk.Notebook(self.master)
+        self.notebk.pack()
+        self.frame1 = ttk.Frame(self.notebk, width=400, height=400, relief=tk.SUNKEN)
+        self.frame2 = ttk.Frame(self.notebk, width=400, height=400, relief=tk.SUNKEN)
+        self.notebk.add(self.frame1, text='One')
+        self.notebk.add(self.frame2, text='Two')
+
+        self.btn = ttk.Button(self.frame1, text='Add/Insert Tab at Position 1', command=self.AddTab)
+        self.btn.pack()
+
+        self.btn2 = ttk.Button(self.frame1, text='Disable Tab at Position 1', command=self.disableTab)
+        self.btn2.pack()
+
+        strdisplay = r'Tab ID:{}'.format(self.notebk.select())
+        ttk.Label(self.frame1, text=strdisplay).pack()
+
+        strdisplay2 = 'Tab index:{}'.format(self.notebk.index(self.notebk.select()))
+        ttk.Label(self.frame1, text=strdisplay2).pack()
+
+    def AddTab(self):
+        if self.btn['text'] == 'Add/Insert Tab at Position 1':
+            self.frame3 = ttk.Frame(self.notebk, width=400, height=400, relief=tk.SUNKEN)
+            self.notebk.insert(1, self.frame3, text='Additional Tab')
+            self.btn.config(text='Remove/Forget Tab')
+        else:
+            self.notebk.forget(1)
+            self.btn.config(text='Add/Insert Tab at Position 1')
+
+    def disableTab(self):
+        # properties of tab - accessible by using notbook.tab(tab_id, option)
+        # to see available properties - print(notbook.tab(tab_id))
+        if self.btn2['text'] == 'Disable Tab at Position 1':
+            self.notebk.tab(1, state='disabled')
+            self.btn2.config(text='Hide Tab at Position 1')
+        elif self.btn2['text'] == 'Hide Tab at Position 1':
+            self.notebk.tab(1, state='hidden')
+            self.btn2.config(text='Normalize Tab at Position 1')
+        elif self.btn2['text'] == 'Normalize Tab at Position 1':
+            self.notebk.tab(1, state='normal')
+            self.btn2.config(text='Disable Tab at Position 1')
 
 
+def launchNoteBookApp():
+    root = tk.Tk()
+    NoteBookApp(root)
+    tk.mainloop()
 
-# root.mainloop()
+
+if __name__ == '__main__':
+    launchNoteBookApp()

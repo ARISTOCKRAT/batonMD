@@ -6,12 +6,15 @@ class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
+        # self.book = ttk.note
         self.init_settings()
 
         # self.l_f_names = []
         self.elements = dict()
         self.fv = master.register(self.float_validator)
         self.create_init_widgets()
+        self.feature_count = len(self.feature_names)
+        self.newdata = []
 
         # self.pack()
 
@@ -39,15 +42,24 @@ class Application(tk.Frame):
             row=len(self.feature_names)+4, column=3, sticky=tk.E)
 
     def calc(self):
-        for entry in self.elements['entries']:
-            val = entry.get()
-            # validate
+        self.getnewdata()
 
         print("CALC button clicked!!!")
 
+    def getnewdata(self):
+        self.newdata = [0 for x in range(self.feature_count)]
+        for i in range(self.feature_count):
+            try:
+                val = self.elements['entries'][i].get()
+                val = 0 if val == "" else val
+                self.newdata[i] = float(val)
+            except Exception as e:
+                print('HZZZ')
+                #LOGging
+                pass
+
     @staticmethod
     def float_validator(isinsert, input, string):
-        print(input)
         if isinsert:
             if input in "0123456789." and string.count('.') <= 1:
                 return True
@@ -83,4 +95,4 @@ class Application(tk.Frame):
                               "Otilib chikish fraksiyasi(FV)",
                               "Solishtirma periferik karshilik(UPS)",
                               "Kerde indeksi")
-
+        self.maintab = ttk.Frame()
