@@ -20,6 +20,7 @@ class Application(tk.Frame):
         self.feature_count = len(self.feature_names)
         self.create_maintab_widgets()
         self.create_settings_widgets()
+        self.create_about_widgets()
         self.newdata = []
 
         # self.pack()
@@ -51,7 +52,6 @@ class Application(tk.Frame):
         # CREATE LOG tab
         wid = tk.Text(self.logtab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)
         wid.grid(row=3, column=0, sticky="wesn")
-        # wid.config(text=s)
         self.wids['log'] = wid
 
     def create_settings_widgets(self):
@@ -69,6 +69,71 @@ class Application(tk.Frame):
         wid.insert(0, "out_data/fuzzy_logic.json")
         wid.grid(row=3, column=1, sticky="we", columnspan=3)
         self.wids['settings']['path'] = wid
+
+    def create_about_widgets(self):
+        label_style = ttk.Style()
+        label_style.configure('Helvetika14.TLabel',
+                          # background='#ccc',
+                          foreground='black',
+                          font=('Helvetica', 12,),
+                          height=50,
+                          # relief="solid",
+                          )
+
+        ttk.Label(self.abouttab, text="Oldi qochdi gaplar = dastur nomi", style='Helvetika14.TLabel'). \
+            grid(row=0, column=0, columnspan=2, sticky='n')
+        ttk.Label(self.abouttab, text="Magistrlik ishi mavzusi\n\n", style='Helvetika14.TLabel'). \
+            grid(row=1, column=0, columnspan=2)
+
+        # BATON (AUTHOR) part
+        texts = (
+            ("Muallif: ", "Bahriddin Akbarov"),
+            ("e-mail: ", "bahriddin.akbarov@gmail.com"),
+            ("Manzil: ", "Mirzo-Ulugbek nomidagi\nO'zbekiston milliy universiteti"),
+            ("Manzil: ", "100174, Toshkent sh.,\nUniversitet ko'chasi, 4-uy"),
+        )
+        baton = tk.Frame(self.abouttab, bd=6)
+        baton.grid(row=2, column=0, sticky='WENS')
+        c = 1
+        for line in texts:
+            ttk.Label(baton, text=line[0], style="Helvetika14.TLabel", justify=tk.RIGHT).\
+                grid(row=c, column=0, sticky='ne')
+            ttk.Label(baton, text=line[1], style="Helvetika14.TLabel", justify=tk.LEFT).\
+                grid(row=c, column=1, sticky='we')
+            c += 1
+
+        # DRUPPI (ADVISOR) part
+        texts = (
+            ("Ilmiy rahbar: ", "Shavkat Madraximov"),
+            ("e-mail: ", "mshavkat@yandex.ru"),
+            ("Manzil: ", "Mirzo-Ulugbek nomidagi\nO'zbekiston milliy universiteti"),
+            ("Manzil: ", "100174, Toshkent sh.,\nUniversitet ko'chasi, 4-uy"),
+            ("ilmiy daraja: ", "fizika-matematika fanlari doktori DSc"),
+        )
+        druppi = tk.Frame(self.abouttab, bd=6)
+        druppi.grid(row=2, column=1, sticky='WENS')
+        c = 1
+        for line in texts:
+            ttk.Label(druppi, text=line[0], style="Helvetika14.TLabel", justify=tk.RIGHT). \
+                grid(row=c, column=0, sticky='ne')
+            ttk.Label(druppi, text=line[1], style="Helvetika14.TLabel", justify=tk.LEFT). \
+                grid(row=c, column=1, sticky='we')
+            c += 1
+
+        # FOOTER
+        ttk.Label(self.abouttab, text="GNU General Public Licence", style="Helvetiva14.TLabel"). \
+            grid(row=5, column=0, columnspan=2)
+        s = """This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. 
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
+        wid = tk.Text(self.abouttab, bg='#eee', wrap=tk.WORD, height=10, bd=2)#, state=tk.DISABLED)
+        wid.grid(row=6, column=0, sticky="wesn", columnspan=2)
+        wid.insert(1.0, s)
+        ttk.Label(self.abouttab, text="All right recieved 2020 ©", style="Helvetiva14.TLabel"). \
+            grid(row=7, column=0, columnspan=2)
+        pass
 
     def calc(self):
         self.getnewdata()
