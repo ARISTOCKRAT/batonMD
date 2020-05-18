@@ -151,9 +151,16 @@ You should have received a copy of the GNU General Public License along with thi
                 val = 0 if val == "" else val
                 self.newdata[i] = float(val)
             except Exception as e:
-                print('HZZZ')
-                #LOGging
+                self.logging(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
+                self.book.select(self.logtab)
+                print(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
                 pass
+
+    def logging(self, text):
+        wid = self.wids['log']
+        wid.config(state=tk.NORMAL)
+        wid.insert(tk.END, text)
+        wid.config(state=tk.DISABLED)
 
     @staticmethod
     def float_validator(isinsert, input, string):
