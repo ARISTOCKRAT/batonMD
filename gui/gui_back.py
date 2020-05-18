@@ -65,16 +65,16 @@ class Application(tk.Frame):
         wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
         wid.grid(row=3, column=0, sticky=tk.E, padx=5)
 
-        wid = ttk.Entry(self.settingstab, width=35, style='Helvetika14.TLabel')
+        wid = ttk.Entry(self.settingstab, width=35)
         wid.insert(0, "out_data/fuzzy_logic.json")
         wid.grid(row=3, column=1, sticky="we", columnspan=3)
         self.wids['settings']['path'] = wid
 
         # FUZZY LOGIC applying order
-        wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
+        wid = ttk.Label(self.settingstab, text="Ishonchlilik meyyori tartibi: ", style='Helvetika14.TLabel')
         wid.grid(row=4, column=0, sticky=tk.E, padx=5)
 
-        wid = ttk.Entry(self.settingstab, width=35, style='Helvetika14.TLabel')
+        wid = ttk.Entry(self.settingstab, width=35)
         wid.insert(0, "1,2,3,4")
         wid.grid(row=4, column=1, sticky="we", columnspan=3)
         self.wids['settings']['order'] = wid
