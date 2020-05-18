@@ -1,43 +1,16 @@
-import tkinter as tk
-from tkinter import ttk
+import json
 
-class ExampleApp(tk.Frame):
-    def __init__(self, *args, **kwargs):
-        tk.Frame.__init__(self, *args, **kwargs)
-        self.var1 = tk.StringVar()
-        self.var2 = tk.StringVar()
+with open("out_data/fuzzy_logic.json") as f:
+    data = json.load(f)
 
-        f1 = ttk.Frame(self)
-        red_button = ttk.Button(f1, text="Red", command=self.make_red)
-        default_button = ttk.Button(f1, text="Default", command=self.make_default)
-        default_button.pack(side="left")
-        red_button.pack(side="left")
+print(data.keys())
+for item in data['68'].items():
+    print(item)
 
-        f2 = ttk.Frame(self)
-        self.cb_one = ttk.Checkbutton(f2, text="Option 1", variable=self.var1,
-                                      onvalue=1, offvalue=0)
-        self.cb_two  = ttk.Checkbutton(f2, text="Option 2", variable=self.var2,
-                                       onvalue=1, offvalue=0)
-        self.cb_one.pack(side="left")
-        self.cb_two.pack(side="left")
+for i in range(69):
+    print(data[str(i)]['feature_name'], end='\t')
+    print(data[str(i)]['intervals_count'], end='\t')
 
-        f1.pack(side="top", fill="x")
-        f2.pack(side="top", fill="x")
-
-        style = ttk.Style()
-        style.configure("Red.TCheckbutton", foreground="red")
-
-    def make_red(self):
-        self.cb_one.configure(style="Red.TCheckbutton")
-        self.cb_two.configure(style="Red.TCheckbutton")
-
-    def make_default(self):
-        self.cb_one.configure(style="TCheckbutton")
-        self.cb_two.configure(style="TCheckbutton")
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    ExampleApp(root).pack(fill="both", expand=True)
-    root.mainloop()
-
+    for interval in data[str(i)]['intervals']:
+        print(f"[{interval[0]:.2f}..{interval[1]:.2f}]({interval[3]:.2f})K{interval[2]}, ", end="")
+    print(f"\t{data[str(i)]['stability']:.2f}")
