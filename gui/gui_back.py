@@ -62,23 +62,24 @@ class Application(tk.Frame):
         self.wids['settings']['btn_apply'] = wid
 
         # FUZZY LOGIC BASE path
-        wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ")
+        wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
         wid.grid(row=3, column=0, sticky=tk.E, padx=5)
 
-        wid = ttk.Entry(self.settingstab, width=35)
+        wid = ttk.Entry(self.settingstab, width=35, style='Helvetika14.TLabel')
         wid.insert(0, "out_data/fuzzy_logic.json")
         wid.grid(row=3, column=1, sticky="we", columnspan=3)
         self.wids['settings']['path'] = wid
 
+        # FUZZY LOGIC applying order
+        wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
+        wid.grid(row=4, column=0, sticky=tk.E, padx=5)
+
+        wid = ttk.Entry(self.settingstab, width=35, style='Helvetika14.TLabel')
+        wid.insert(0, "1,2,3,4")
+        wid.grid(row=4, column=1, sticky="we", columnspan=3)
+        self.wids['settings']['order'] = wid
+
     def create_about_widgets(self):
-        label_style = ttk.Style()
-        label_style.configure('Helvetika14.TLabel',
-                          # background='#ccc',
-                          foreground='black',
-                          font=('Helvetica', 12,),
-                          height=50,
-                          # relief="solid",
-                          )
 
         ttk.Label(self.abouttab, text="Oldi qochdi gaplar = dastur nomi", style='Helvetika14.TLabel'). \
             grid(row=0, column=0, columnspan=2, sticky='n')
@@ -195,6 +196,14 @@ You should have received a copy of the GNU General Public License along with thi
         self.abouttab = ttk.Frame(self.book, relief=tk.RIDGE)
         self.settingstab = ttk.Frame(self.book, relief=tk.SUNKEN)
         self.logtab = ttk.Frame(self.book, relief=tk.RAISED)
+        label_style = ttk.Style()
+        label_style.configure('Helvetika14.TLabel',
+                              # background='#ccc',
+                              foreground='black',
+                              font=('Helvetica', 12,),
+                              height=50,
+                              # relief="solid",
+                              )
 
 
 
