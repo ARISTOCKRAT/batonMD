@@ -60,6 +60,9 @@ def turgunlik_ishchi(feature_col, labels, explain_text):
 project_path = r"d:\_NUU\2020\batonMD"
 matritsa = np.genfromtxt(project_path + r"\init_data\giper\ObjectsExt.csv", delimiter=',')
 labels = np.genfromtxt(project_path + r"\init_data\giper\Target.csv", delimiter=",")
+with open(project_path + r"\init_data\giper\feature_names.csv") as f:
+    feature_names = f.read().split("\n")
+# print(feature_names)
 
 shape = matritsa.shape
 # feature_sorting = []
@@ -76,8 +79,8 @@ for col in range(shape[1]):
     # print(intervals)
 
     data[col] = {
-        "feature_name" : "f" + str(col),
-        "stability" : tur[0],
+        "feature_name": feature_names[col],
+        "stability": tur[0],
         "intervals_count": tur[1],
         "intervals": intervals.copy(),
     }
@@ -88,3 +91,35 @@ for d in range(data["features_count"]):
 
 with open("out_data/fuzzy_logic.json", "w", encoding="utf-8") as file:
     json.dump(data, file)
+
+# EXPORT DATA INTO xlsx file
+print('\n\n########export data###################\n\n')
+from openpyxl import Workbook
+wb = Workbook()
+ws = wb.active
+ws.title = "Table 3"
+ws.sheet_properties.tabColor = "008000"
+# ws.cell(row=5, column=5, value='asdasdas')
+# ws.cell(row=1, column=6, value=123)
+# ws.cell(row=1, column=1, value=12.3)
+
+ws.cell(row=1, column=1, value="Alomat nomi")
+ws.cell(row=1, column=2, value="Intervallar soni")
+ws.cell(row=1, column=3, value="Intervallar, tegislilik funsiyalari va dominator")
+ws.cell(row=1, column=4, value="U")
+
+row = 2
+for i in range(data['features_count']):
+
+    ws.cell(row=row, column=1, value=data[i]['feature_name'])
+    ws.cell(row=row, column=2, value=data[i]['intervals_count'])
+
+    s = ""
+    for interval in data[i]['intervals']:
+        s += f"[{interval[0]:.2f}..{interval[1]:.2f}]({interval[3]:.2f})K{interval[2]}, "
+    ws.cell(row=row, column=3, value=s)
+
+    ws.cell(row=row, column=4, value=f"\t{data[i]['stability']:.2f}")
+    row += 1
+
+wb.save('out_data/table3.xlsx')
