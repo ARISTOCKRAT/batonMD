@@ -3,6 +3,14 @@ from tkinter import ttk
 
 
 class Application(tk.Frame):
+    #
+    """
+    self.wids => dict
+    self.wids['settings'] => dict
+    self.wids['settings']['path'] => str
+    self.wids['settings']['order'] => str
+
+    """
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
@@ -48,7 +56,6 @@ class Application(tk.Frame):
         self.wids["calc"].grid(
             row=len(self.feature_names)+4, column=3, sticky=tk.W)
 
-        s="jasjdkljaskl jlksajdkljaskld\nasjdkjaskl\nasd"
         # CREATE LOG tab
         wid = tk.Text(self.logtab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)
         wid.grid(row=3, column=0, sticky="wesn")
@@ -56,6 +63,7 @@ class Application(tk.Frame):
 
     def create_settings_widgets(self):
         self.wids['settings'] = dict()
+
         # CREATE APPLY BUTTON for starting action
         wid = ttk.Button(self.settingstab, text='Apply', command=self.settings_apply)
         wid.grid(row=1, column=3, sticky='we', pady=10)
@@ -144,17 +152,26 @@ You should have received a copy of the GNU General Public License along with thi
         print("APPLY button clicked!!!")
 
     def getnewdata(self):
+        order = set()
         self.newdata = [0 for x in range(self.feature_count)]
         for i in range(self.feature_count):
             try:
                 val = self.wids['entries'][i].get()
-                val = 0 if val == "" else val
+                if val == "": val = 0
+                else:
+                    val = val
+                    order.add(i)
+                # val = 0 if val == "" else val
                 self.newdata[i] = float(val)
+
             except Exception as e:
                 self.logging(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
                 self.book.select(self.logtab)
                 print(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
-                pass
+
+        self.wids['settings']['order'].delete(0, tk.END)
+        b = ', '.join(str(e) for e in order)
+        self.wids['settings']['order'].insert(0, b)
 
     def logging(self, text):
         wid = self.wids['log']
