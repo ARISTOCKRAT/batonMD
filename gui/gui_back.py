@@ -18,6 +18,7 @@ class Application(tk.Frame):
         self.book = ttk.Notebook(self.master)
         self.book.pack()
         self.init_settings()
+        # self.master.wm_geometry("%dx%d+%d+%d" % (800, 600, 100, 100))
 
         self.book.add(self.maintab, text='Asosiy')
         self.book.add(self.settingstab, text='Sozlamalar')
@@ -37,18 +38,29 @@ class Application(tk.Frame):
 
         # self.pack()
 
-    def create_maintab_widgets(self):
+    def create_maintab_widgets2(self):
+
         # container = ttk.Frame(root)
         canvas = tk.Canvas(self.maintab)
         scrollbar = ttk.Scrollbar(self.maintab, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
-        canvas.config(yscrollcommand=scrollbar.set)
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+        canvas.grid(row=3, column=0, rowspan=50, columnspan=3, sticky='nswe')
+        scrollbar.grid(row=3, column=3, rowspan=50, sticky='ns')
+        canvas.create_window((0, 0), window=scrollable_frame,
+                             anchor="nw", width=900, height=1800)
+        canvas.configure(yscrollcommand=scrollbar.set)
         # scroll = tk.Scrollbar(self.maintab)
         # scroll.grid(row=3, column=4, rowspan=50)
         # CREATE LABELs with feature names
         self.wids["labels"] = []
         for n, f_name in enumerate(self.feature_names):
-            wid = tk.Checkbutton(self.maintab, text=f_name)
+            wid = tk.Checkbutton(scrollable_frame, text=f_name)
             wid.grid(row=n+3, column=1, sticky=tk.W)
             wid.deselect()
             self.wids['labels'].append(wid)
@@ -56,7 +68,7 @@ class Application(tk.Frame):
         # CREATE ENTRYs for input feature values
         self.wids["entries"] = []
         for n in range(len(self.feature_names)):
-            wid = ttk.Entry(self.maintab)
+            wid = ttk.Entry(scrollable_frame)
             wid.grid(row=n+3, column=0, sticky=tk.W, padx=5)
             wid.config(validate='key', validatecommand=(self.fv, "%P", "%W"))
             self.wids['entries'].append(wid)
@@ -66,6 +78,57 @@ class Application(tk.Frame):
         self.wids["calc"].grid(
             # row=len(self.feature_names)+4, column=3, sticky=tk.W)
             row=0, column=3, sticky=tk.W)
+
+        # CREATE LOG tab
+        wid = tk.Text(self.logtab, bg='#afa', wrap=tk.WORD, height=40, bd=2, state=tk.DISABLED)
+        wid.grid(row=3, column=0, sticky="wesn")
+        self.wids['log'] = wid
+
+    def create_maintab_widgets(self):
+
+        def myfunction(event):
+            canvas.configure(scrollregion=canvas.bbox("all"), width=600, height=600)
+
+        myframe = tk.Frame(self.maintab, relief=tk.GROOVE,
+                           width=50, height=100, bd=1)
+        myframe.place(x=10, y=45)
+        canvas = tk.Canvas(myframe)
+        frame = tk.Frame(canvas)
+        myscrollbar = tk.Scrollbar(myframe, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=myscrollbar.set)
+
+        myscrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left")
+        canvas.create_window((0, 0), window=frame, anchor='nw')
+        frame.bind("<Configure>", myfunction)
+
+
+        # scroll = tk.Scrollbar(self.maintab)
+        # scroll.grid(row=3, column=4, rowspan=50)
+        # CREATE LABELs with feature names
+        self.wids["labels"] = []
+        for n, f_name in enumerate(self.feature_names):
+            wid = tk.Checkbutton(frame, text=f_name)
+            wid.grid(row=n+3, column=1, sticky=tk.W)
+            wid.deselect()
+            self.wids['labels'].append(wid)
+
+        # CREATE ENTRYs for input feature values
+        self.wids["entries"] = []
+        for n in range(len(self.feature_names)):
+            wid = ttk.Entry(frame)
+            wid.grid(row=n+3, column=0, sticky=tk.W, padx=5)
+            wid.config(validate='key', validatecommand=(self.fv, "%P", "%W"))
+            self.wids['entries'].append(wid)
+
+        # CREATE CALC BUTTON for starting action
+
+        self.wids["calc"] = tk.Button(self.maintab, text='Hiloblash',
+                                      command=self.calc, height=2, bg='#afa')
+        self.wids['calc'].pack(side=tk.TOP, fill=tk.X)
+        # self.wids["calc"].grid(
+            # row=len(self.feature_names)+4, column=3, sticky=tk.W)
+            # row=0, column=3, sticky=tk.W)
 
         # CREATE LOG tab
         wid = tk.Text(self.logtab, bg='#afa', wrap=tk.WORD, height=40, bd=2, state=tk.DISABLED)
@@ -189,10 +252,6 @@ You should have received a copy of the GNU General Public License along with thi
                 self.book.select(self.logtab)
                 print(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
 
-        # self.wids['settings']['order'].delete(0, tk.END)
-        # b = ', '.join(str(e) for e in order)
-        # self.wids['settings']['order'].insert(0, b)
-
     def confidence_measure(self):
         md = 0  # Мера доверия
         # order = self.wids['settings']['order'].get()
@@ -226,7 +285,9 @@ You should have received a copy of the GNU General Public License along with thi
         wid.config(state=tk.DISABLED)
 
     def float_validator(self, string, wid_name):
-        a = wid_name.replace('.!notebook.!frame.!entry', "")
+        a = wid_name[wid_name.find('!entry') + 6:]
+        # a = wid_name.replace('.!notebook.!frame.!entry', "")
+
         a = int(a)-1 if a else 0
         try:
             if string == "":
