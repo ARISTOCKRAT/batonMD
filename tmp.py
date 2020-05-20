@@ -1,23 +1,10 @@
-# import json
-#
-# with open("out_data/fuzzy_logic.json") as f:
-#     data = json.load(f)
-#
-# print(data.keys())
-# for item in data['68'].items():
-#     print(item)
-#
-# for i in range(69):
-#     print(data[str(i)]['feature_name'], end='\t')
-#     print(data[str(i)]['intervals_count'], end='\t')
-#
-#     for interval in data[str(i)]['intervals']:
-#         print(f"[{interval[0]:.2f}..{interval[1]:.2f}]({interval[3]:.2f})K{interval[2]}, ", end="")
-#     print(f"\t{data[str(i)]['stability']:.2f}")
+# Python3 program to demonstrate the
+# use of replace() method   
 
-a = {1,2,3,4,5,}
+string = "geeks for geeks geeks geeks geeks"
 
-b = ', '.join(str(e) for e in a)
-print(b)
+# Prints the string by replacing geeks by Geeks  
+print(string.replace("geeks", "Geeks"))
 
-
+# Prints the string by replacing only 3 occurrence of Geeks   
+print(string.replace("geeks", "GeeksforGeeks", 3))

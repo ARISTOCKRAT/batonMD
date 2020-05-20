@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import json
 
 
 class Application(tk.Frame):
@@ -30,6 +31,7 @@ class Application(tk.Frame):
         self.create_settings_widgets()
         self.create_about_widgets()
         self.newdata = []
+        self.load_fuzzy_logic_base()
 
         # self.pack()
 
@@ -39,7 +41,7 @@ class Application(tk.Frame):
         self.wids["labels"] = []
         for n, f_name in enumerate(self.feature_names):
             wid = ttk.Label(self.maintab, text=f_name)
-            wid.grid(row=n+3, column=0, sticky=tk.E)
+            wid.grid(row=n+3, column=1, sticky=tk.W)
 
             self.wids['labels'].append(wid)
 
@@ -47,9 +49,18 @@ class Application(tk.Frame):
         self.wids["entries"] = []
         for n in range(len(self.feature_names)):
             wid = ttk.Entry(self.maintab)
-            wid.grid(row=n+3, column=1, sticky=tk.E)
+            wid.grid(row=n+3, column=0, sticky=tk.W)
             wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
             self.wids['entries'].append(wid)
+
+        # CREATE CHECKBOXes for inputs
+        # self.wids["checkboxes"] = []
+        # for n in range(len(self.feature_names)):
+        #     wid = ttk.Checkbutton(self.maintab)
+        #     wid.grid(row=n + 3, column=3, sticky=tk.E)
+        #     # wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
+        #     wid.config(text='sometext')
+        #     self.wids["checkboxes"].append(wid)
 
         # CREATE CALC BUTTON for starting action
         self.wids["calc"] = ttk.Button(self.maintab, text='Hiloblash', command=self.calc)
@@ -83,7 +94,7 @@ class Application(tk.Frame):
         wid.grid(row=4, column=0, sticky=tk.E, padx=5)
 
         wid = ttk.Entry(self.settingstab, width=35)
-        wid.insert(0, "1,2,3,4")
+        # wid.insert(0, "1,2,3,4")
         wid.grid(row=4, column=1, sticky="we", columnspan=3)
         self.wids['settings']['order'] = wid
 
@@ -149,6 +160,7 @@ You should have received a copy of the GNU General Public License along with thi
         print("CALC button clicked!!!")
 
     def settings_apply(self):
+        self.confidence_measure()
         print("APPLY button clicked!!!")
 
     def getnewdata(self):
@@ -173,6 +185,30 @@ You should have received a copy of the GNU General Public License along with thi
         b = ', '.join(str(e) for e in order)
         self.wids['settings']['order'].insert(0, b)
 
+    def confidence_measure(self):
+        md = 0  # Мера доверия
+        order = self.wids['settings']['order'].get()
+        order = order.replace(",", " ").split()
+        for orderok in order:
+            f = 0.
+            val = float(self.wids["entries"][int(orderok)].get())
+            minima = float('inf')
+            for interval in self.fuzzy_logic_base[orderok]['intervals']:
+                if interval[0] <= val <= interval[1]:
+                    f = interval[3]
+                    break
+
+                delta = min(abs(interval[0] - val), abs(interval[1] - val))
+                if delta < minima:
+                    minima = delta
+                    not_in_interval = interval[3]
+                # print(f"o={orderok}; D={delta}; f={f}; i[0]={interval[0]} - i[1]={interval[1]}")
+            else:
+                f = not_in_interval
+            # Calculating confidence measure
+            md = md + f * (1-md)
+        return md
+
     def logging(self, text):
         wid = self.wids['log']
         wid.config(state=tk.NORMAL)
@@ -185,6 +221,11 @@ You should have received a copy of the GNU General Public License along with thi
             if input in "0123456789.+-" and string.count('.') <= 1:
                 return True
         return False
+
+    def load_fuzzy_logic_base(self):
+        path = '../' + self.wids['settings']['path'].get()
+        with open(path) as f:
+            self.fuzzy_logic_base = json.load(f)
 
     def init_settings(self):
         self.feature_names = ("Yoshi",
