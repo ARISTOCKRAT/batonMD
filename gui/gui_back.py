@@ -27,6 +27,7 @@ class Application(tk.Frame):
         self.wids = dict()
         self.fv = master.register(self.float_validator)
         self.feature_count = len(self.feature_names)
+        self.scroll = None
         self.create_maintab_widgets()
         self.create_settings_widgets()
         self.create_about_widgets()
@@ -37,7 +38,13 @@ class Application(tk.Frame):
         # self.pack()
 
     def create_maintab_widgets(self):
-
+        # container = ttk.Frame(root)
+        canvas = tk.Canvas(self.maintab)
+        scrollbar = ttk.Scrollbar(self.maintab, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+        canvas.config(yscrollcommand=scrollbar.set)
+        # scroll = tk.Scrollbar(self.maintab)
+        # scroll.grid(row=3, column=4, rowspan=50)
         # CREATE LABELs with feature names
         self.wids["labels"] = []
         for n, f_name in enumerate(self.feature_names):
@@ -61,7 +68,7 @@ class Application(tk.Frame):
             row=0, column=3, sticky=tk.W)
 
         # CREATE LOG tab
-        wid = tk.Text(self.logtab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)
+        wid = tk.Text(self.logtab, bg='#afa', wrap=tk.WORD, height=40, bd=2, state=tk.DISABLED)
         wid.grid(row=3, column=0, sticky="wesn")
         self.wids['log'] = wid
 
@@ -150,22 +157,30 @@ You should have received a copy of the GNU General Public License along with thi
 
     def calc(self):
         self.getnewdata()
+        self.settings_apply()
+        self.book.select(self.logtab)
         print("CALC button clicked!!!")
 
     def settings_apply(self):
-        self.confidence_measure()
+        s = ""
+        for num in self.fuzzy_logic_order:
+            s += self.feature_names[num] + ', '
+        md = self.confidence_measure()
+        s = f"{s} alomatlani ishlatganda be'morning K1 sinfga " \
+            f"tegishlilik ishonchlilik meyyori {md*100:.2f}%"
+        self.logging(s)
         print("APPLY button clicked!!!")
 
     def getnewdata(self):
-        order = set()
+        # order = set()
         self.newdata = [0 for x in range(self.feature_count)]
         for i in range(self.feature_count):
             try:
                 val = self.wids['entries'][i].get()
                 if val == "": val = 0
-                else:
-                    val = val
-                    order.add(i)
+                # else:
+                #     val = val
+                    # order.add(i)
                 # val = 0 if val == "" else val
                 self.newdata[i] = float(val)
 
@@ -174,19 +189,21 @@ You should have received a copy of the GNU General Public License along with thi
                 self.book.select(self.logtab)
                 print(f"{self.wids['labels'][i]['text']} :: qiymati xato kiritildi\n")
 
-        self.wids['settings']['order'].delete(0, tk.END)
-        b = ', '.join(str(e) for e in order)
-        self.wids['settings']['order'].insert(0, b)
+        # self.wids['settings']['order'].delete(0, tk.END)
+        # b = ', '.join(str(e) for e in order)
+        # self.wids['settings']['order'].insert(0, b)
 
     def confidence_measure(self):
         md = 0  # Мера доверия
-        order = self.wids['settings']['order'].get()
-        order = order.replace(",", " ").split()
+        # order = self.wids['settings']['order'].get()
+        # order = order.replace(",", " ").split()
+        order = self.fuzzy_logic_order
+        print(order)
         for orderok in order:
             f = 0.
-            val = float(self.wids["entries"][int(orderok)].get())
+            val = float(self.wids["entries"][orderok].get())
             minima = float('inf')
-            for interval in self.fuzzy_logic_base[orderok]['intervals']:
+            for interval in self.fuzzy_logic_base[str(orderok)]['intervals']:
                 if interval[0] <= val <= interval[1]:
                     f = interval[3]
                     break
@@ -205,7 +222,7 @@ You should have received a copy of the GNU General Public License along with thi
     def logging(self, text):
         wid = self.wids['log']
         wid.config(state=tk.NORMAL)
-        wid.insert(tk.END, text)
+        wid.insert(tk.END, '\n\n'+text)
         wid.config(state=tk.DISABLED)
 
     def float_validator(self, string, wid_name):
