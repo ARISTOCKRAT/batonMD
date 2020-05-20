@@ -40,9 +40,9 @@ class Application(tk.Frame):
         # CREATE LABELs with feature names
         self.wids["labels"] = []
         for n, f_name in enumerate(self.feature_names):
-            wid = ttk.Label(self.maintab, text=f_name)
+            wid = tk.Checkbutton(self.maintab, text=f_name)
             wid.grid(row=n+3, column=1, sticky=tk.W)
-
+            wid.deselect()
             self.wids['labels'].append(wid)
 
         # CREATE ENTRYs for input feature values
@@ -53,19 +53,11 @@ class Application(tk.Frame):
             wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
             self.wids['entries'].append(wid)
 
-        # CREATE CHECKBOXes for inputs
-        # self.wids["checkboxes"] = []
-        # for n in range(len(self.feature_names)):
-        #     wid = ttk.Checkbutton(self.maintab)
-        #     wid.grid(row=n + 3, column=3, sticky=tk.E)
-        #     # wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
-        #     wid.config(text='sometext')
-        #     self.wids["checkboxes"].append(wid)
-
         # CREATE CALC BUTTON for starting action
         self.wids["calc"] = ttk.Button(self.maintab, text='Hiloblash', command=self.calc)
         self.wids["calc"].grid(
-            row=len(self.feature_names)+4, column=3, sticky=tk.W)
+            # row=len(self.feature_names)+4, column=3, sticky=tk.W)
+            row=0, column=3, sticky=tk.W)
 
         # CREATE LOG tab
         wid = tk.Text(self.logtab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)

@@ -1,10 +1,11 @@
-# Python3 program to demonstrate the
-# use of replace() method   
+import tkinter
+from tkinter import ttk
+tkwindow = tkinter.Tk()
+chk = ttk.Checkbutton(tkwindow, text="foo")
+chk.state(['selected'])  # check the checkbox
+# chk.state(['!selected']) # clear the checkbox
+# chk.state(['disabled'])  # disable the checkbox
+# chk.state(['!disabled','selected']) # enable the checkbox and put a check in it!
+chk.grid(column=0, row=0)
 
-string = "geeks for geeks geeks geeks geeks"
-
-# Prints the string by replacing geeks by Geeks  
-print(string.replace("geeks", "Geeks"))
-
-# Prints the string by replacing only 3 occurrence of Geeks   
-print(string.replace("geeks", "GeeksforGeeks", 3))
+tkwindow.mainloop()
