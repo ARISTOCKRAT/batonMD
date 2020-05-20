@@ -32,6 +32,7 @@ class Application(tk.Frame):
         self.create_about_widgets()
         self.newdata = []
         self.load_fuzzy_logic_base()
+        self.fuzzy_logic_order = set()
 
         # self.pack()
 
@@ -49,8 +50,8 @@ class Application(tk.Frame):
         self.wids["entries"] = []
         for n in range(len(self.feature_names)):
             wid = ttk.Entry(self.maintab)
-            wid.grid(row=n+3, column=0, sticky=tk.W)
-            wid.config(validate='key', validatecommand=(self.fv, '%d', '%S', "%P"))
+            wid.grid(row=n+3, column=0, sticky=tk.W, padx=5)
+            wid.config(validate='key', validatecommand=(self.fv, "%P", "%W"))
             self.wids['entries'].append(wid)
 
         # CREATE CALC BUTTON for starting action
@@ -207,12 +208,21 @@ You should have received a copy of the GNU General Public License along with thi
         wid.insert(tk.END, text)
         wid.config(state=tk.DISABLED)
 
-    @staticmethod
-    def float_validator(isinsert, input, string):
-        if isinsert:
-            if input in "0123456789.+-" and string.count('.') <= 1:
+    def float_validator(self, string, wid_name):
+        a = wid_name.replace('.!notebook.!frame.!entry', "")
+        a = int(a)-1 if a else 0
+        try:
+            if string == "":
+                self.wids["labels"][a].deselect()
+                self.fuzzy_logic_order.discard(a)
                 return True
-        return False
+            else:
+                self.wids["labels"][a].select()
+                self.fuzzy_logic_order.add(a)
+            float(string)
+            return True
+        except:
+            return False
 
     def load_fuzzy_logic_base(self):
         path = '../' + self.wids['settings']['path'].get()
