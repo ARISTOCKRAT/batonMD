@@ -38,52 +38,6 @@ class Application(tk.Frame):
 
         # self.pack()
 
-    def create_maintab_widgets2(self):
-
-        # container = ttk.Frame(root)
-        canvas = tk.Canvas(self.maintab)
-        scrollbar = ttk.Scrollbar(self.maintab, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(
-                scrollregion=canvas.bbox("all")
-            )
-        )
-        canvas.grid(row=3, column=0, rowspan=50, columnspan=3, sticky='nswe')
-        scrollbar.grid(row=3, column=3, rowspan=50, sticky='ns')
-        canvas.create_window((0, 0), window=scrollable_frame,
-                             anchor="nw", width=900, height=1800)
-        canvas.configure(yscrollcommand=scrollbar.set)
-        # scroll = tk.Scrollbar(self.maintab)
-        # scroll.grid(row=3, column=4, rowspan=50)
-        # CREATE LABELs with feature names
-        self.wids["labels"] = []
-        for n, f_name in enumerate(self.feature_names):
-            wid = tk.Checkbutton(scrollable_frame, text=f_name)
-            wid.grid(row=n+3, column=1, sticky=tk.W)
-            wid.deselect()
-            self.wids['labels'].append(wid)
-
-        # CREATE ENTRYs for input feature values
-        self.wids["entries"] = []
-        for n in range(len(self.feature_names)):
-            wid = ttk.Entry(scrollable_frame)
-            wid.grid(row=n+3, column=0, sticky=tk.W, padx=5)
-            wid.config(validate='key', validatecommand=(self.fv, "%P", "%W"))
-            self.wids['entries'].append(wid)
-
-        # CREATE CALC BUTTON for starting action
-        self.wids["calc"] = ttk.Button(self.maintab, text='Hiloblash', command=self.calc)
-        self.wids["calc"].grid(
-            # row=len(self.feature_names)+4, column=3, sticky=tk.W)
-            row=0, column=3, sticky=tk.W)
-
-        # CREATE LOG tab
-        wid = tk.Text(self.logtab, bg='#afa', wrap=tk.WORD, height=40, bd=2, state=tk.DISABLED)
-        wid.grid(row=3, column=0, sticky="wesn")
-        self.wids['log'] = wid
-
     def create_maintab_widgets(self):
 
         def myfunction(event):
@@ -136,6 +90,7 @@ class Application(tk.Frame):
         self.wids['log'] = wid
 
     def create_settings_widgets(self):
+        #REGION HIDE
         self.wids['settings'] = dict()
 
         # CREATE APPLY BUTTON for starting action
@@ -145,21 +100,27 @@ class Application(tk.Frame):
 
         # FUZZY LOGIC BASE path
         wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
-        wid.grid(row=3, column=0, sticky=tk.E, padx=5)
+        # wid.grid(row=3, column=0, sticky=tk.E, padx=5)
 
         wid = ttk.Entry(self.settingstab, width=35)
         wid.insert(0, "out_data/fuzzy_logic.json")
-        wid.grid(row=3, column=1, sticky="we", columnspan=3)
+        # wid.grid(row=3, column=1, sticky="we", columnspan=3)
         self.wids['settings']['path'] = wid
 
         # FUZZY LOGIC applying order
         wid = ttk.Label(self.settingstab, text="Ishonchlilik meyyori tartibi: ", style='Helvetika14.TLabel')
-        wid.grid(row=4, column=0, sticky=tk.E, padx=5)
+        # wid.grid(row=4, column=0, sticky=tk.E, padx=5)
 
         wid = ttk.Entry(self.settingstab, width=35)
-        # wid.insert(0, "1,2,3,4")
-        wid.grid(row=4, column=1, sticky="we", columnspan=3)
+        # wid.grid(row=4, column=1, sticky="we", columnspan=3)
         self.wids['settings']['order'] = wid
+        #ENDREGION
+
+        # CREATE FUZZY_LOGIC_BASE textbox
+        wid = tk.Text(self.settingstab, bg='#afa', wrap=tk.NONE, height=40, bd=2, state=tk.DISABLED)
+        wid.grid(row=3, column=0, columnspan=4, sticky="wesn")
+        self.wids['fuzzy_logic_base'] = wid
+        #
 
     def create_about_widgets(self):
 
@@ -281,7 +242,7 @@ You should have received a copy of the GNU General Public License along with thi
     def logging(self, text):
         wid = self.wids['log']
         wid.config(state=tk.NORMAL)
-        wid.insert(tk.END, '\n\n'+text)
+        wid.insert(tk.END, text+'\n\n')
         wid.config(state=tk.DISABLED)
 
     def float_validator(self, string, wid_name):
@@ -305,7 +266,14 @@ You should have received a copy of the GNU General Public License along with thi
     def load_fuzzy_logic_base(self):
         path = '../' + self.wids['settings']['path'].get()
         with open(path) as f:
-            self.fuzzy_logic_base = json.load(f)
+            json_data = json.load(f)
+        self.fuzzy_logic_base = json_data
+        wid = self.wids['fuzzy_logic_base']
+        wid.config(state=tk.NORMAL)
+
+        json_data = json.dumps(json_data, indent=4, sort_keys=True)
+        self.wids['fuzzy_logic_base'].insert(tk.END, json_data)
+        wid.config(state=tk.DISABLED)
 
     def init_settings(self):
         self.feature_names = ("Yoshi",
