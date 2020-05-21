@@ -131,8 +131,8 @@ class Application(tk.Frame):
 
         # BATON (AUTHOR) part
         texts = (
-            ("Muallif: ", "Bahriddin Akbarov"),
-            ("e-mail: ", "bahriddin.akbarov@gmail.com"),
+            ("Muallif: ", "Ulugbek Negmatov"),
+            ("e-mail: ", "mu.negmatov@gmail.com"),
             ("Manzil: ", "Mirzo-Ulugbek nomidagi\nO'zbekiston milliy universiteti"),
             ("Manzil: ", "100174, Toshkent sh.,\nUniversitet ko'chasi, 4-uy"),
         )
@@ -270,6 +270,12 @@ You should have received a copy of the GNU General Public License along with thi
         self.fuzzy_logic_base = json_data
         wid = self.wids['fuzzy_logic_base']
         wid.config(state=tk.NORMAL)
+
+        scroll = ttk.Scrollbar(self.settingstab, command=wid.yview)
+        # scrollb = ttk.Scrollbar(self, command=self.txt.yview)
+        scroll.grid(row=3, column=4, sticky='nsew')
+        wid['yscrollcommand'] = scroll.set
+        # self.txt['yscrollcommand'] = scrollb.set
 
         json_data = json.dumps(json_data, indent=4, sort_keys=True)
         self.wids['fuzzy_logic_base'].insert(tk.END, json_data)
