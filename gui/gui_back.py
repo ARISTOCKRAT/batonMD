@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import json
+import webbrowser
 
 
 class Application(tk.Frame):
@@ -21,7 +22,7 @@ class Application(tk.Frame):
         # self.master.wm_geometry("%dx%d+%d+%d" % (800, 600, 100, 100))
 
         self.book.add(self.maintab, text='Asosiy')
-        self.book.add(self.settingstab, text='Sozlamalar')
+        self.book.add(self.settingstab, text="Noqat'iy mantiq bazasi")
         self.book.add(self.logtab, text='LOGs')
         self.book.add(self.abouttab, text='Muallif')
 
@@ -102,9 +103,9 @@ class Application(tk.Frame):
         wid = ttk.Label(self.settingstab, text="Noqat'iy mantiq bazasi: ", style='Helvetika14.TLabel')
         # wid.grid(row=3, column=0, sticky=tk.E, padx=5)
 
-        wid = ttk.Entry(self.settingstab, width=35)
+        wid = ttk.Entry(self.settingstab)
         wid.insert(0, "out_data/fuzzy_logic.json")
-        # wid.grid(row=3, column=1, sticky="we", columnspan=3)
+        wid.grid(row=1, column=0, sticky="we", columnspan=3, padx=10)
         self.wids['settings']['path'] = wid
 
         # FUZZY LOGIC applying order
@@ -124,15 +125,17 @@ class Application(tk.Frame):
 
     def create_about_widgets(self):
 
-        ttk.Label(self.abouttab, text="Oldi qochdi gaplar = dastur nomi", style='Helvetika14.TLabel'). \
-            grid(row=0, column=0, columnspan=2, sticky='n')
-        ttk.Label(self.abouttab, text="Magistrlik ishi mavzusi\n\n", style='Helvetika14.TLabel'). \
+        ttk.Label(self.abouttab, text="DruBa ver.1.7.1\n"). \
+            grid(row=0, column=0, columnspan=2, sticky='e', pady=10)
+        theme = "Interval usullardan foydalangan holda qat'iymas mantiq qoidalarini\n" \
+                "shakillantirish, va ulardan intellektual tizimlarni yaratishda qo'llash\n\n"
+        ttk.Label(self.abouttab, text=theme, style='Helvetika14.TLabel'). \
             grid(row=1, column=0, columnspan=2)
 
         # BATON (AUTHOR) part
         texts = (
-            ("Muallif: ", "Ulugbek Negmatov"),
-            ("e-mail: ", "mu.negmatov@gmail.com"),
+            ("Muallif: ", "Bahriddin Akbarov"),
+            ("e-mail: ", "bahriddin.akbarov@gmail.com"),
             ("Manzil: ", "Mirzo-Ulugbek nomidagi\nO'zbekiston milliy universiteti"),
             ("Manzil: ", "100174, Toshkent sh.,\nUniversitet ko'chasi, 4-uy"),
         )
@@ -177,23 +180,61 @@ You should have received a copy of the GNU General Public License along with thi
         wid.insert(1.0, s)
         ttk.Label(self.abouttab, text="All right recieved 2020 ©", style="Helvetiva14.TLabel"). \
             grid(row=7, column=0, columnspan=2)
+        # ttk.Label(self.abouttab, text="https://github.com/ARISTOCKRAT/batonMD", style="Helvetiva14.TLabel"). \
+        #     grid(row=8, column=0, columnspan=2, sticky='e')
+        wid = tk.Label(self.abouttab, text=r"https://github.com/ARISTOCKRAT/batonMD", fg="blue", cursor="hand2")
+        wid.grid(row=8, column=1, sticky='e')
+        wid.bind("<Button-1>", self.link_opener)
+
         pass
+
+    @staticmethod
+    def link_opener(event):
+        webbrowser.open_new(event.widget.cget("text"))
 
     def calc(self):
         self.getnewdata()
-        self.settings_apply()
+        s = ""
+        for num in self.fuzzy_logic_order:
+            s += self.feature_names[num] + ', '
+        md = self.confidence_measure() * 100
+
+        lang_val = self.lingvo(md, "K1")
+
+        s = f"{s} alomatlani ishlatganda, yangi obyekt {lang_val} ({md:.2f}%) "
+        # f"tegishlilik ishonchlilik meyyori {md:.2f}%"
+        self.logging(s)
         self.book.select(self.logtab)
         print("CALC button clicked!!!")
 
     def settings_apply(self):
-        s = ""
-        for num in self.fuzzy_logic_order:
-            s += self.feature_names[num] + ', '
-        md = self.confidence_measure()
-        s = f"{s} alomatlani ishlatganda be'morning K1 sinfga " \
-            f"tegishlilik ishonchlilik meyyori {md*100:.2f}%"
-        self.logging(s)
+        try:
+            self.load_fuzzy_logic_base()
+            text = self.wids['settings']['path'].get().split('/')[-1]
+            text = f'Baza "{text}" muvofaqqiyatli yuklandi'
+            self.logging(text)
+            self.book.select(self.maintab)
+        except Exception as e:
+            text = self.wids['settings']['path'].get().split('/')[-1]
+            text = f'Baza "{text}"-ni yuklashda muammo chiqdi {e.args}'
+            self.logging(text)
+            self.book.select(self.logtab)
         print("APPLY button clicked!!!")
+
+    def lingvo(self, persent, label_):
+        if type(persent) == str: persent = float(persent)
+        # if type(persent) == float:
+        #     persent = int(persent)
+        if   persent < 10: return "Абсолют " + label_ + " эмас"
+        elif persent < 20: return "Буюк эхтимолда " + label_ + " эмас"
+        elif persent < 30: return "Типик " + label_ + " эмас вакили"
+        elif persent < 40: return "" + label_ + " булмаслиги мумкин"
+        elif persent < 50: return "" + label_ + " булмаслиги хам булиши хам мумкин"
+        elif persent < 60: return "" + label_ + " булиши хам булмаслиги хам мумкин"
+        elif persent < 70: return "" + label_ + " булиши мумкин"
+        elif persent < 80: return "Типик " + label_ + " вакили"
+        elif persent < 90: return "Буюк эхтимолда " + label_ + ""
+        else: return "Абсолют " + label_ + ""
 
     def getnewdata(self):
         # order = set()
