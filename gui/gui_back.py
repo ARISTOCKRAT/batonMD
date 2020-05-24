@@ -78,7 +78,7 @@ class Application(tk.Frame):
 
         # CREATE CALC BUTTON for starting action
 
-        self.wids["calc"] = tk.Button(self.maintab, text='Hiloblash',
+        self.wids["calc"] = tk.Button(self.maintab, text='Hisoblash',
                                       command=self.calc, height=2, bg='#afa')
         self.wids['calc'].pack(side=tk.TOP, fill=tk.X)
         # self.wids["calc"].grid(

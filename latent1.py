@@ -165,14 +165,14 @@ print("Turg'unlik bo'yicha tartiblagandagi birinchi 10 tasi: \n"
 for row in sort_turgunlik:
     print(f"{row[-1]} :: {row[0]:1.2f}")
     c+=1
-    if c == 10:
+    if c == 1000:
         break
 c = 0
-print("Intervallar soni bo'yicha tartiblagandagi birinchi 10 tasi: \n"
-      "Latent formulasi\t::\tintervallar soni")
-for row in sort_interval_soni:
-    print(f"{row[-1]} :: {row[1]:1.2f}")
-    c+=1
-    if c == 10:
-        break
+# print("Intervallar soni bo'yicha tartiblagandagi birinchi 10 tasi: \n"
+#       "Latent formulasi\t::\tintervallar soni")
+# for row in sort_interval_soni:
+#     print(f"{row[-1]} :: {row[1]:1.2f}")
+#     c+=1
+#     if c == 100:
+#         break
 
