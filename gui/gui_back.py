@@ -201,9 +201,10 @@ You should have received a copy of the GNU General Public License along with thi
         order = set()
         for n, checks in enumerate(self.wids['checks']):
             if checks.get():
-                self.wids["entries"][n].delete(0, tk.END)
-                self.wids['entries'][n].insert(0, 0)
                 order.add(n)
+                if self.wids["entries"][n].get() == "":
+                    self.wids["entries"][n].delete(0, tk.END)
+                    self.wids['entries'][n].insert(0, 0)
         self.fuzzy_logic_order = order
         for num in self.fuzzy_logic_order:
             s += self.feature_names[num] + ', '
