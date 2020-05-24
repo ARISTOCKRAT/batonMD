@@ -158,7 +158,7 @@ class Application(tk.Frame):
             ("e-mail: ", "mshavkat@yandex.ru"),
             ("Manzil: ", "Mirzo-Ulugbek nomidagi\nO'zbekiston milliy universiteti"),
             ("Manzil: ", "100174, Toshkent sh.,\nUniversitet ko'chasi, 4-uy"),
-            ("ilmiy daraja: ", "fizika-matematika fanlari doktori DSc"),
+            ("ilmiy daraja: ", "Texnika fanlari doktori DSc"),
         )
         druppi = tk.Frame(self.abouttab, bd=6)
         druppi.grid(row=2, column=1, sticky='WENS')
