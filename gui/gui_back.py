@@ -5,7 +5,7 @@ import webbrowser
 
 
 class Application(tk.Frame):
-    #
+    """"""
     """
     self.wids => dict
     self.wids['settings'] => dict
@@ -62,8 +62,11 @@ class Application(tk.Frame):
         # scroll.grid(row=3, column=4, rowspan=50)
         # CREATE LABELs with feature names
         self.wids["labels"] = []
+        self.wids['checks'] = []
         for n, f_name in enumerate(self.feature_names):
-            wid = tk.Checkbutton(frame, text=f_name)
+            var = tk.IntVar()
+            self.wids['checks'].append(var)
+            wid = tk.Checkbutton(frame, text=f_name, variable=var)
             wid.grid(row=n+3, column=1, sticky=tk.W)
             wid.deselect()
             self.wids['labels'].append(wid)
@@ -174,7 +177,7 @@ class Application(tk.Frame):
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. 
 
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\nThis program has been created by _ARISTOKRAT_ munegmatov@gmail.com"""
         wid = tk.Text(self.abouttab, bg='#eee', wrap=tk.WORD, height=10, bd=2)#, state=tk.DISABLED)
         wid.grid(row=6, column=0, sticky="wesn", columnspan=2)
         wid.insert(1.0, s)
@@ -195,6 +198,13 @@ You should have received a copy of the GNU General Public License along with thi
     def calc(self):
         self.getnewdata()
         s = ""
+        order = set()
+        for n, checks in enumerate(self.wids['checks']):
+            if checks.get():
+                self.wids["entries"][n].delete(0, tk.END)
+                self.wids['entries'][n].insert(0, 0)
+                order.add(n)
+        self.fuzzy_logic_order = order
         for num in self.fuzzy_logic_order:
             s += self.feature_names[num] + ', '
         md = self.confidence_measure() * 100
@@ -223,18 +233,21 @@ You should have received a copy of the GNU General Public License along with thi
 
     def lingvo(self, persent, label_):
         if type(persent) == str: persent = float(persent)
+
+        if self.wids['settings']['path'].get() == "out_data/fuzzy_logic.json":
+            label_ = "sog'lom"
         # if type(persent) == float:
         #     persent = int(persent)
-        if   persent < 10: return "Абсолют " + label_ + " эмас"
-        elif persent < 20: return "Буюк эхтимолда " + label_ + " эмас"
-        elif persent < 30: return "Типик " + label_ + " эмас вакили"
-        elif persent < 40: return "" + label_ + " булмаслиги мумкин"
-        elif persent < 50: return "" + label_ + " булмаслиги хам булиши хам мумкин"
-        elif persent < 60: return "" + label_ + " булиши хам булмаслиги хам мумкин"
-        elif persent < 70: return "" + label_ + " булиши мумкин"
-        elif persent < 80: return "Типик " + label_ + " вакили"
-        elif persent < 90: return "Буюк эхтимолда " + label_ + ""
-        else: return "Абсолют " + label_ + ""
+        if   persent < 10: return "Absolyut " + label_ + " emas"
+        elif persent < 20: return "Buyuk ehtimolda " + label_ + " emas"
+        elif persent < 30: return "Типик " + label_ + " emas vakili"
+        elif persent < 40: return "" + label_ + " bo'lmasligi mumkin"
+        elif persent < 50: return "" + label_ + " bo'lmasligi ham mumkin bo'lisha ham mumkin"
+        elif persent < 60: return "" + label_ + " bo'lishi ham mumkin bo'lmasligi ham mumkin"
+        elif persent < 70: return "" + label_ + " bo'lishi mumkin"
+        elif persent < 80: return "Tipik " + label_ + " vakili"
+        elif persent < 90: return "Buyuk ehtimolda " + label_ + ""
+        else:              return "Absolyut " + label_ + ""
 
     def getnewdata(self):
         # order = set()
@@ -256,9 +269,9 @@ You should have received a copy of the GNU General Public License along with thi
 
     def confidence_measure(self):
         md = 0  # Мера доверия
-        # order = self.wids['settings']['order'].get()
-        # order = order.replace(",", " ").split()
+        #
         order = self.fuzzy_logic_order
+
         print(order)
         for orderok in order:
             f = 0.

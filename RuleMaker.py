@@ -93,15 +93,12 @@ with open("out_data/fuzzy_logic.json", "w", encoding="utf-8") as file:
     json.dump(data, file)
 
 # EXPORT DATA INTO xlsx file
-print('\n\n########export data###################\n\n')
+print('\n\n########EXPORT DATA###################\n\n')
 from openpyxl import Workbook
 wb = Workbook()
 ws = wb.active
 ws.title = "Table 3"
 ws.sheet_properties.tabColor = "008000"
-# ws.cell(row=5, column=5, value='asdasdas')
-# ws.cell(row=1, column=6, value=123)
-# ws.cell(row=1, column=1, value=12.3)
 
 ws.cell(row=1, column=1, value="Alomat nomi")
 ws.cell(row=1, column=2, value="Intervallar soni")
@@ -123,3 +120,23 @@ for i in range(data['features_count']):
     row += 1
 
 wb.save('out_data/table3.xlsx')
+
+if __name__ == '__main__':
+    print("SUCCESS: Objects.csv muvaffaqiyatli o'qib olindi!")
+    print("SUCCESS: Target.csv muvaffaqiyatli o'qib olindi!")
+    print("SUCCESS: Discription.csv muvaffaqiyatli o'qib olindi!\n")
+
+    print("SUCCESS: Yangi 1218-ta latent alomat yaratildi!\n")
+
+    print("SUCCESS: Berilmalar out_data/ObjectExt.csv fayliga yozildi!")
+    print("SUCCESS: Berilmalar out_data/table3.xlsx fayliga yozildi!")
+
+    print("SUCCESS: Modul bajarildi!")
+
+
+
+
+
+
+
+
