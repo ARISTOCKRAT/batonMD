@@ -197,7 +197,7 @@ You should have received a copy of the GNU General Public License along with thi
 
     def calc(self):
         self.getnewdata()
-        s = ""
+
         order = set()
         for n, checks in enumerate(self.wids['checks']):
             if checks.get():
@@ -206,13 +206,15 @@ You should have received a copy of the GNU General Public License along with thi
                     self.wids["entries"][n].delete(0, tk.END)
                     self.wids['entries'][n].insert(0, 0)
         self.fuzzy_logic_order = order
+        s = "Patsiyent X\nAlomatlari quyidagicha:\n"
         for num in self.fuzzy_logic_order:
-            s += self.feature_names[num] + ', '
+            s += self.feature_names[num] + \
+                 " ko'rsatkichi " + self.wids["entries"][num].get() + ", \n"
         md = self.confidence_measure()
 
         lang_val = self.lingvo(md, "K1")
 
-        s = f"{s} alomatlani ishlatganda, yangi obyekt {lang_val} ({md:.2f}) "
+        s = f"{s}ekspert tizimining hulosasi: {lang_val}. (Asos {md:.2f}) "
         # f"tegishlilik ishonchlilik meyyori {md:.2f}%"
         self.logging(s)
         self.book.select(self.logtab)
