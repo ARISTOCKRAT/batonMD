@@ -208,11 +208,11 @@ You should have received a copy of the GNU General Public License along with thi
         self.fuzzy_logic_order = order
         for num in self.fuzzy_logic_order:
             s += self.feature_names[num] + ', '
-        md = self.confidence_measure() * 100
+        md = self.confidence_measure()
 
         lang_val = self.lingvo(md, "K1")
 
-        s = f"{s} alomatlani ishlatganda, yangi obyekt {lang_val} ({md:.2f}%) "
+        s = f"{s} alomatlani ishlatganda, yangi obyekt {lang_val} ({md:.2f}) "
         # f"tegishlilik ishonchlilik meyyori {md:.2f}%"
         self.logging(s)
         self.book.select(self.logtab)
@@ -237,18 +237,26 @@ You should have received a copy of the GNU General Public License along with thi
 
         if self.wids['settings']['path'].get() == "out_data/fuzzy_logic.json":
             label_ = "sog'lom"
-        # if type(persent) == float:
-        #     persent = int(persent)
-        if   persent < 10: return "Absolyut " + label_ + " emas"
-        elif persent < 20: return "Buyuk ehtimolda " + label_ + " emas"
-        elif persent < 30: return "Типик " + label_ + " emas vakili"
-        elif persent < 40: return "" + label_ + " bo'lmasligi mumkin"
-        elif persent < 50: return "" + label_ + " bo'lmasligi ham mumkin bo'lisha ham mumkin"
-        elif persent < 60: return "" + label_ + " bo'lishi ham mumkin bo'lmasligi ham mumkin"
-        elif persent < 70: return "" + label_ + " bo'lishi mumkin"
-        elif persent < 80: return "Tipik " + label_ + " vakili"
-        elif persent < 90: return "Buyuk ehtimolda " + label_ + ""
-        else:              return "Absolyut " + label_ + ""
+
+        #region CHANGED according to the clients request
+        # if   persent < 10: return "Absolyut " + label_ + " emas"
+        # elif persent < 20: return "Buyuk ehtimolda " + label_ + " emas"
+        # elif persent < 30: return "Tipik " + label_ + " emas vakili"
+        # elif persent < 40: return "" + label_ + " bo'lmasligi mumkin"
+        # elif persent < 50: return "" + label_ + " bo'lmasligi ham mumkin bo'lisha ham mumkin"
+        # elif persent < 60: return "" + label_ + " bo'lishi ham mumkin bo'lmasligi ham mumkin"
+        # elif persent < 70: return "" + label_ + " bo'lishi mumkin"
+        # elif persent < 80: return "Tipik " + label_ + " vakili"
+        # elif persent < 90: return "Buyuk ehtimolda " + label_ + ""
+        # else:              return "Absolyut " + label_ + ""
+        #endregion
+
+        if   persent < .20: return "Kasal"
+        elif persent < .50: return "Kasallikning alomatlari kuchli"
+        elif persent < .70: return "Kasallik alomati bor"
+        elif persent < .85: return "Kasallik alomatlari ozgina bor"
+        else:               return "Deyarli sog'lom"
+
 
     def getnewdata(self):
         # order = set()
