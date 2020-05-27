@@ -22,7 +22,7 @@ class Application(tk.Frame):
         # self.master.wm_geometry("%dx%d+%d+%d" % (800, 600, 100, 100))
 
         self.book.add(self.maintab, text='Asosiy')
-        self.book.add(self.settingstab, text="Noqat'iy mantiq bazasi")
+        self.book.add(self.settingstab, text="Qat'iymas mantiq qoidalar bazasi")
         self.book.add(self.logtab, text='LOGs')
         self.book.add(self.abouttab, text='Muallif')
 
